@@ -32,8 +32,8 @@ Below is a table showing the lower and upper bounds of memory savings:
 
 | version | min. memory savings | max memory savings |
 |---------|---------------------|--------------------|
-| 3.9     | 80                  | 216                |
-| 3.10    | 80                  | 216                |
+| 3.9     | 80                  | 240                |
+| 3.10    | 80                  | 240                |
 | 3.11    | 40                  | 64                 |
 | 3.12    | 32                  | 56                 |
 | 3.13    | 40                  | 64                 |
@@ -70,3 +70,32 @@ until these issues are resolved:
 So, I used `tracemalloc` to measure the memory usage of the objects.
 By allocating a large number of objects, you can get a good estimate
 of the actual memory savings.
+
+# Other factors
+
+Some other factors that didn't affect the results, but are worth mentioning:
+
+- Inheritance (if done properly) does not affect the memory savings or lookup speed
+  in any significant way. This was the setup used:
+
+  ```python
+  class _Base1:
+    __slots__ = ("a", "b", "c", "d")
+
+
+  class _Base2(_Base1):
+      __slots__ = ("e", "f", "g", "h")
+
+
+  class _Base3(_Base2):
+      __slots__ = ()
+
+
+  class A:
+      __slots__ = ("i", "j")
+  ```
+
+- The number of attributes in the class does not affect the lookup speed
+  in any significant way. The benchmarks were run with 2, 10, and 26 attributes.
+  Note that above 30 attributes, the object layout optimizations are not applied,
+  and the benefits *are* significant again.

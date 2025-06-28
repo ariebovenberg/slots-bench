@@ -40,10 +40,5 @@ def sizeof_by_tracemaloc(klass):
 
 
 if __name__ == "__main__":
-    memory_compare(1)
-    memory_compare(2)
-    memory_compare(3)
-    memory_compare(5)
-    memory_compare(8)
-    memory_compare(13)
-    memory_compare(25)
+    for i in range(1, 30):
+        memory_compare(i)
